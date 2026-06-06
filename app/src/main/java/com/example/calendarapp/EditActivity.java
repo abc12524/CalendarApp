@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,7 @@ public class EditActivity extends AppCompatActivity {
         
         initializeViews();
         loadExistingNote();
+        loadWeather();
     }
     
     private void initializeViews() {
@@ -64,6 +66,15 @@ public class EditActivity extends AppCompatActivity {
                 saveNote();
             }
         });
+    }
+    
+    private void loadWeather() {
+        TextView weatherTemp = findViewById(R.id.weatherTemp);
+        String temperature = getIntent().getStringExtra("temperature");
+        if (temperature != null && !temperature.isEmpty()) {
+            weatherTemp.setText(temperature);
+            weatherTemp.setVisibility(View.VISIBLE);
+        }
     }
     
     private void loadExistingNote() {

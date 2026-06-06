@@ -277,13 +277,17 @@ public class MainActivity extends AppCompatActivity {
             dayCell.setBackgroundResource(R.drawable.today_background);
             dayNumber.setTextColor(Color.WHITE);
             
-            // 显示天气信息
+            // 显示天气信息（只取 emoji 部分）
             String dateKey = DATE_KEY_FORMAT.format(date.getTime());
             String weather = weatherCache.get(dateKey);
             if (weather != null && !weather.isEmpty()) {
-                weatherText.setText(weather);
-                weatherText.setVisibility(View.VISIBLE);
-                weatherText.setTextColor(Color.argb(200, 255, 255, 255));
+                String[] parts = weather.split("\\|");
+                String emoji = parts[0].trim();
+                if (!emoji.isEmpty()) {
+                    weatherText.setText(emoji);
+                    weatherText.setVisibility(View.VISIBLE);
+                    weatherText.setTextColor(Color.argb(200, 255, 255, 255));
+                }
             }
         } else if (isSelected) {
             dayCell.setBackgroundResource(R.drawable.selected_background);
@@ -344,6 +348,15 @@ public class MainActivity extends AppCompatActivity {
         // 启动全屏编辑Activity
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         intent.putExtra("date", date.getTimeInMillis());
+        // 传递天气温度
+        String dateKey = DATE_KEY_FORMAT.format(date.getTime());
+        String weather = weatherCache.get(dateKey);
+        if (weather != null && !weather.isEmpty()) {
+            String[] parts = weather.split("\\|");
+            if (parts.length >= 2) {
+                intent.putExtra("temperature", parts[1].trim());
+            }
+        }
         startActivity(intent);
     }
     
@@ -409,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             dateKey = params[0];
             try {
-                URL url = new URL("https://wttr.in/Hubei/Tianmen?format=3");
+                URL url = new URL("https://wttr.in/Hubei/Tianmen?format=%25c|%25t");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
