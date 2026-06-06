@@ -3,6 +3,7 @@ name: Android CI
 on:
   push:
     branches: [ main, master ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
 
@@ -39,8 +40,34 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload APK (artifact)
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: app-debug
+
+      - name: Create Release & Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          name: CalendarApp ${{ github.ref_name }}
+          body: |
+            CalendarApp ${{ github.ref_name }} 发布
+            
+            ##### 更新说明
+            - 查看 Releases 的 commit 历史了解此版本的变更
+          files: |
+            *.apk
+          generate_release_notes: true
