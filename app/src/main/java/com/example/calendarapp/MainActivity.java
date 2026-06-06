@@ -45,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private Map<String, String> weatherCache;
     private boolean weatherFetchInProgress = false;
     private GestureDetector gestureDetector;
+    private TextView cityNameText;
+    private String currentCityUrl = "湖北/天门";
+    private String currentCityDisplay = "天门";
     
     private static final String PREFS_NAME = "CalendarNotes";
+    private static final String PREF_CITY_URL = "weather_city_url";
+    private static final String PREF_CITY_NAME = "weather_city_name";
     private static final SimpleDateFormat DATE_KEY_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private static final SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日 EEEE", Locale.getDefault());
     private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("yyyy年MM月", Locale.getDefault());
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         currentDayText = findViewById(R.id.currentDay);
         currentDateText = findViewById(R.id.currentDate);
         displayMonthText = findViewById(R.id.displayMonth);
+        cityNameText = findViewById(R.id.cityName);
     }
     
     private void initializeData() {
@@ -120,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
         loadNotes();
         // 加载缓存的天气数据
         loadWeatherCache();
+        // 加载保存的城市
+        currentCityUrl = sharedPreferences.getString(PREF_CITY_URL, "湖北/天门");
+        currentCityDisplay = sharedPreferences.getString(PREF_CITY_NAME, "天门");
     }
     
     private void setupEventListeners() {
@@ -214,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         displayMonthText.setText(MONTH_FORMAT.format(currentDate.getTime()));
         currentDayText.setText(String.valueOf(selectedDate.get(Calendar.DAY_OF_MONTH)));
         currentDateText.setText(DISPLAY_DATE_FORMAT.format(selectedDate.getTime()));
+        cityNameText.setText(currentCityDisplay + "  ▾");
         
         // 清空日历网格
         calendarGrid.removeAllViews();
