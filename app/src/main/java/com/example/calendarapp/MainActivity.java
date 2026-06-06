@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -596,6 +597,12 @@ public class MainActivity extends AppCompatActivity {
             notePreviewContent.setTextColor(Color.GRAY);
         }
         
+        // 日历网格改为自适应高度（仅1行）
+        LinearLayout.LayoutParams gridParams = (LinearLayout.LayoutParams) calendarGrid.getLayoutParams();
+        gridParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        gridParams.weight = 0;
+        calendarGrid.setLayoutParams(gridParams);
+        
         renderCalendar();
         notePreview.setVisibility(View.VISIBLE);
         bottomNavBar.setVisibility(View.GONE);
@@ -605,6 +612,13 @@ public class MainActivity extends AppCompatActivity {
         isCollapsed = false;
         notePreview.setVisibility(View.GONE);
         bottomNavBar.setVisibility(View.VISIBLE);
+        
+        // 日历网格恢复填充模式
+        LinearLayout.LayoutParams gridParams = (LinearLayout.LayoutParams) calendarGrid.getLayoutParams();
+        gridParams.height = 0;
+        gridParams.weight = 1;
+        calendarGrid.setLayoutParams(gridParams);
+        
         renderCalendar();
     }
     
