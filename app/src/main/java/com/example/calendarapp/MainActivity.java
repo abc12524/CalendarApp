@@ -377,6 +377,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("temperature", parts[1].trim());
             }
         }
+        // 传递城市名
+        intent.putExtra("cityName", currentCityDisplay);
         startActivity(intent);
     }
     

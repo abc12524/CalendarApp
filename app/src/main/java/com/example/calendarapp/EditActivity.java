@@ -71,8 +71,9 @@ public class EditActivity extends AppCompatActivity {
     private void loadWeather() {
         TextView weatherTemp = findViewById(R.id.weatherTemp);
         String temperature = getIntent().getStringExtra("temperature");
+        String cityName = getIntent().getStringExtra("cityName");
         if (temperature != null && !temperature.isEmpty()) {
-            weatherTemp.setText("天门 " + temperature);
+            weatherTemp.setText((cityName != null ? cityName : "天门") + " " + temperature);
             weatherTemp.setVisibility(View.VISIBLE);
         }
     }
