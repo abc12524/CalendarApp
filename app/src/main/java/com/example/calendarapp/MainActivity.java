@@ -374,9 +374,13 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void selectDate(Calendar date) {
-        selectedDate = (Calendar) date.clone();
-        renderCalendar();
-        openEditor(date);
+        // 再次点击已选中的日期才进入编辑模式
+        if (isSelected(date)) {
+            openEditor(date);
+        } else {
+            selectedDate = (Calendar) date.clone();
+            renderCalendar();
+        }
     }
     
     // 农历计算方法
