@@ -323,25 +323,30 @@ public class MainActivity extends AppCompatActivity {
         if (isToday) {
             dayCell.setBackgroundResource(R.drawable.today_background);
             dayNumber.setTextColor(Color.WHITE);
-            
-            // 显示天气信息（只取 emoji 部分）
-            String dateKey = DATE_KEY_FORMAT.format(date.getTime());
-            String weather = weatherCache.get(dateKey);
-            if (weather != null && !weather.isEmpty()) {
-                String[] parts = weather.split("\\|");
-                String emoji = parts[0].trim();
-                if (!emoji.isEmpty()) {
-                    weatherText.setText(emoji);
-                    weatherText.setVisibility(View.VISIBLE);
-                    weatherText.setTextColor(Color.argb(200, 255, 255, 255));
-                }
-            }
         } else if (isSelected) {
             dayCell.setBackgroundResource(R.drawable.selected_background);
             dayNumber.setTextColor(Color.WHITE);
         } else {
             dayCell.setBackgroundResource(R.drawable.day_background);
             dayNumber.setTextColor(getResources().getColor(R.color.dark_gray));
+        }
+        
+        // 显示天气图标（所有有缓存的日期都显示）
+        String dateKey = DATE_KEY_FORMAT.format(date.getTime());
+        String weather = weatherCache.get(dateKey);
+        if (weather != null && !weather.isEmpty()) {
+            String[] parts = weather.split("\\|");
+            String emoji = parts[0].trim();
+            if (!emoji.isEmpty()) {
+                weatherText.setText(emoji);
+                weatherText.setVisibility(View.VISIBLE);
+                // 背景色深时文字白色，背景色浅时文字深色
+                if (isToday || isSelected) {
+                    weatherText.setTextColor(Color.argb(200, 255, 255, 255));
+                } else {
+                    weatherText.setTextColor(Color.argb(160, 80, 80, 80));
+                }
+            }
         }
         
         // 检查是否有笔记内容，显示标记点
