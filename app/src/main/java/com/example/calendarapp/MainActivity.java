@@ -49,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView cityNameText;
     private String currentCityUrl = "湖北/武汉";
     private String currentCityDisplay = "武汉";
+    private boolean isCollapsed = false;
+    private View notePreview;
+    private TextView notePreviewTitle;
+    private TextView notePreviewContent;
+    private View bottomNavBar;
     
     private static final String PREFS_NAME = "CalendarNotes";
     private static final String PREF_CITY_URL = "weather_city_url";
@@ -112,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
         currentDateText = findViewById(R.id.currentDate);
         displayMonthText = findViewById(R.id.displayMonth);
         cityNameText = findViewById(R.id.cityName);
+        notePreview = findViewById(R.id.notePreview);
+        notePreviewTitle = findViewById(R.id.notePreviewTitle);
+        notePreviewContent = findViewById(R.id.notePreviewContent);
+        bottomNavBar = findViewById(R.id.bottomNavBar);
     }
     
     private void initializeData() {
@@ -235,24 +244,43 @@ public class MainActivity extends AppCompatActivity {
         int daysInMonth = lastDay.get(Calendar.DAY_OF_MONTH);
         int startingDay = firstDay.get(Calendar.DAY_OF_WEEK);
         
-        // 添加空白单元格来对齐星期
-        for (int i = 1; i < startingDay; i++) {
-            addEmptyDay();
-        }
-        
-        // 添加当前月的日期
-        Calendar today = Calendar.getInstance();
-        for (int day = 1; day <= daysInMonth; day++) {
-            Calendar date = (Calendar) currentDate.clone();
-            date.set(Calendar.DAY_OF_MONTH, day);
-            addDay(day, date, isToday(date), isSelected(date));
-        }
-        
-        // 添加剩余的空白单元格来保持网格完整
-        int totalCells = 42; // 6行 * 7列
-        int remainingCells = totalCells - (startingDay - 1 + daysInMonth);
-        for (int i = 0; i < remainingCells; i++) {
-            addEmptyDay();
+        if (isCollapsed) {
+            // 折叠模式：只显示今天所在的周
+            Calendar today = Calendar.getInstance();
+            int todayDay = today.get(Calendar.DAY_OF_MONTH);
+            int todayPos = startingDay - 1 + todayDay - 1;
+            int weekRow = todayPos / 7;
+            int weekStart = weekRow * 7;
+            int weekEnd = Math.min(weekStart + 6, startingDay - 1 + daysInMonth - 1);
+            
+            for (int pos = weekStart; pos <= weekEnd; pos++) {
+                if (pos < startingDay - 1 || pos >= startingDay - 1 + daysInMonth) {
+                    addEmptyDay();
+                } else {
+                    int day = pos - (startingDay - 1) + 1;
+                    Calendar date = (Calendar) currentDate.clone();
+                    date.set(Calendar.DAY_OF_MONTH, day);
+                    addDay(day, date, isToday(date), isSelected(date));
+                }
+            }
+        } else {
+            // 正常模式：显示完整月份
+            for (int i = 1; i < startingDay; i++) {
+                addEmptyDay();
+            }
+            
+            Calendar today = Calendar.getInstance();
+            for (int day = 1; day <= daysInMonth; day++) {
+                Calendar date = (Calendar) currentDate.clone();
+                date.set(Calendar.DAY_OF_MONTH, day);
+                addDay(day, date, isToday(date), isSelected(date));
+            }
+            
+            int totalCells = 42;
+            int remainingCells = totalCells - (startingDay - 1 + daysInMonth);
+            for (int i = 0; i < remainingCells; i++) {
+                addEmptyDay();
+            }
         }
         
         // 如果当前月份包含今天，触发天气获取
@@ -384,6 +412,7 @@ public class MainActivity extends AppCompatActivity {
         Calendar today = Calendar.getInstance();
         currentDate = (Calendar) today.clone();
         selectedDate = (Calendar) today.clone();
+        if (isCollapsed) expandCalendar();
         renderCalendar();
     }
     
@@ -539,12 +568,50 @@ public class MainActivity extends AppCompatActivity {
     
     // ========== 天气方法结束 ==========
     
+    private void collapseToWeek() {
+        isCollapsed = true;
+        
+        // 更新笔记预览内容
+        Calendar today = Calendar.getInstance();
+        String dateKey = DATE_KEY_FORMAT.format(today.getTime());
+        Note note = dbHelper.getNote(dateKey);
+        if (note != null && note.hasContent()) {
+            String title = note.getTitle();
+            String content = note.getContent();
+            if (title != null && !title.isEmpty()) {
+                notePreviewTitle.setText(title);
+                notePreviewTitle.setVisibility(View.VISIBLE);
+            } else {
+                notePreviewTitle.setVisibility(View.GONE);
+            }
+            notePreviewContent.setText(content != null ? content : "");
+            notePreviewContent.setTextColor(Color.argb(200, 80, 80, 80));
+        } else {
+            notePreviewTitle.setVisibility(View.GONE);
+            notePreviewContent.setText("今天还没有写日记 ✍️");
+            notePreviewContent.setTextColor(Color.GRAY);
+        }
+        
+        renderCalendar();
+        notePreview.setVisibility(View.VISIBLE);
+        bottomNavBar.setVisibility(View.GONE);
+    }
+    
+    private void expandCalendar() {
+        isCollapsed = false;
+        notePreview.setVisibility(View.GONE);
+        bottomNavBar.setVisibility(View.VISIBLE);
+        renderCalendar();
+    }
+    
     private void prevMonth() {
+        if (isCollapsed) expandCalendar();
         currentDate.add(Calendar.MONTH, -1);
         renderCalendar();
     }
     
     private void nextMonth() {
+        if (isCollapsed) expandCalendar();
         currentDate.add(Calendar.MONTH, 1);
         renderCalendar();
     }
@@ -570,6 +637,21 @@ public class MainActivity extends AppCompatActivity {
                             nextMonth();
                         }
                         return true;
+                    }
+                } else {
+                    // 垂直滑动
+                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY < 0) {
+                            // 上滑 - 折叠到本周
+                            if (!isCollapsed) {
+                                collapseToWeek();
+                            }
+                            return true;
+                        } else if (diffY > 0 && isCollapsed) {
+                            // 下滑 - 展开
+                            expandCalendar();
+                            return true;
+                        }
                     }
                 }
                 return false;
