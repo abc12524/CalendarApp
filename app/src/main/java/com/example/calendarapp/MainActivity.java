@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView currentDateText;
     private TextView displayMonthText;
     private SharedPreferences sharedPreferences;
+    private DatabaseHelper dbHelper;
     private Map<String, String> notesMap;
     private Map<String, String> weatherCache;
     private boolean weatherFetchInProgress = false;
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         editingDate = Calendar.getInstance();
         
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        dbHelper = DatabaseHelper.getInstance(this);
         notesMap = new HashMap<>();
         weatherCache = new HashMap<>();
         
@@ -166,27 +168,23 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void loadNotes() {
-        // 清空现有的笔记映射
+        // 从 SQLite 加载所有笔记到内存
         notesMap.clear();
-        
-        Map<String, ?> allEntries = sharedPreferences.getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            if (entry.getValue() instanceof String) {
-                notesMap.put(entry.getKey(), (String) entry.getValue());
-            }
-        }
+        notesMap.putAll(dbHelper.loadAllNotes());
     }
     
     private void saveNote(String dateKey, String content) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (content.trim().isEmpty()) {
-            editor.remove(dateKey);
+        if (content == null || content.trim().isEmpty()) {
+            dbHelper.deleteNote(dateKey);
             notesMap.remove(dateKey);
         } else {
-            editor.putString(dateKey, content);
+            // 解析 title|content 格式
+            String[] parts = content.split("\\|", 2);
+            String title = parts.length >= 2 ? parts[0] : "";
+            String noteContent = parts.length >= 2 ? parts[1] : parts[0];
+            dbHelper.saveNote(dateKey, title, noteContent);
             notesMap.put(dateKey, content);
         }
-        editor.apply();
     }
     
     private String getNoteForDate(Calendar date) {
