@@ -3,7 +3,6 @@ name: Android CI
 on:
   push:
     branches: [ main, master ]
-    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
 
@@ -38,46 +37,10 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build Debug APK
-        run: |
-          VERSION_CODE=${{ github.run_number }}
-          VERSION_NAME=${{ github.ref_name }}
-          # 非 tag 推送时 versionName 用默认值
-          if [ "${{ github.ref_type }}" != "tag" ]; then
-            ./gradlew assembleDebug -PversionCode=$VERSION_CODE
-          else
-            ./gradlew assembleDebug -PversionCode=$VERSION_CODE -PversionName=${VERSION_NAME#v}
-          fi
+        run: ./gradlew assembleDebug -PversionCode=${{ github.run_number }}
 
-      - name: Upload APK (artifact)
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download APK
-        uses: actions/download-artifact@v4
-        with:
-          name: app-debug
-
-      - name: Create Release & Upload APK
-        uses: softprops/action-gh-release@v2
-        with:
-          name: CalendarApp ${{ github.ref_name }}
-          body: |
-            CalendarApp ${{ github.ref_name }} 发布
-            
-            **versionCode:** ${{ github.run_number }}
-            **versionName:** ${{ github.ref_name }}
-            
-            ---
-          files: |
-            *.apk
-          generate_release_notes: true
