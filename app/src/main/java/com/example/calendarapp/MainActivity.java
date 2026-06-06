@@ -319,13 +319,13 @@ public class MainActivity extends AppCompatActivity {
         params.setGravity(Gravity.FILL);
         dayCell.setLayoutParams(params);
         
-        // 设置背景和文字颜色
-        if (isToday) {
+        // 设置背景和文字颜色（选中优先，今天只用蓝色文字标识）
+        if (isSelected) {
             dayCell.setBackgroundResource(R.drawable.today_background);
             dayNumber.setTextColor(Color.WHITE);
-        } else if (isSelected) {
-            dayCell.setBackgroundResource(R.drawable.selected_background);
-            dayNumber.setTextColor(Color.WHITE);
+        } else if (isToday) {
+            dayCell.setBackgroundResource(R.drawable.day_background);
+            dayNumber.setTextColor(getResources().getColor(R.color.colorPrimary));
         } else {
             dayCell.setBackgroundResource(R.drawable.day_background);
             dayNumber.setTextColor(getResources().getColor(R.color.dark_gray));
@@ -340,8 +340,8 @@ public class MainActivity extends AppCompatActivity {
             if (!emoji.isEmpty()) {
                 weatherText.setText(emoji);
                 weatherText.setVisibility(View.VISIBLE);
-                // 背景色深时文字白色，背景色浅时文字深色
-                if (isToday || isSelected) {
+                // 选中时文字白色，否则灰色
+                if (isSelected) {
                     weatherText.setTextColor(Color.argb(200, 255, 255, 255));
                 } else {
                     weatherText.setTextColor(Color.argb(160, 80, 80, 80));
