@@ -319,16 +319,27 @@ public class MainActivity extends AppCompatActivity {
         params.setGravity(Gravity.FILL);
         dayCell.setLayoutParams(params);
         
-        // 设置背景和文字颜色（选中优先，今天只用蓝色文字标识）
+        // 设置背景和文字颜色（选中优先，今天蓝色，过去黑色，未来浅色）
+        Calendar todayMidnight = Calendar.getInstance();
+        todayMidnight.set(Calendar.HOUR_OF_DAY, 0);
+        todayMidnight.set(Calendar.MINUTE, 0);
+        todayMidnight.set(Calendar.SECOND, 0);
+        todayMidnight.set(Calendar.MILLISECOND, 0);
+        boolean isPastDay = !isToday && date.getTimeInMillis() < todayMidnight.getTimeInMillis();
+        boolean isFutureDay = date.getTimeInMillis() > todayMidnight.getTimeInMillis();
+        
+        dayCell.setBackgroundResource(R.drawable.day_background);
         if (isSelected) {
             dayCell.setBackgroundResource(R.drawable.today_background);
             dayNumber.setTextColor(Color.WHITE);
         } else if (isToday) {
-            dayCell.setBackgroundResource(R.drawable.day_background);
             dayNumber.setTextColor(getResources().getColor(R.color.colorPrimary));
+        } else if (isPastDay) {
+            dayNumber.setTextColor(Color.BLACK);
+        } else if (isFutureDay) {
+            dayNumber.setTextColor(getResources().getColor(R.color.gray));
         } else {
-            dayCell.setBackgroundResource(R.drawable.day_background);
-            dayNumber.setTextColor(getResources().getColor(R.color.dark_gray));
+            dayNumber.setTextColor(Color.BLACK);
         }
         
         // 显示天气图标（所有有缓存的日期都显示）
