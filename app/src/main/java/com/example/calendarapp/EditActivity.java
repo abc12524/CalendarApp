@@ -73,7 +73,7 @@ public class EditActivity extends AppCompatActivity {
         String temperature = getIntent().getStringExtra("temperature");
         String cityName = getIntent().getStringExtra("cityName");
         if (temperature != null && !temperature.isEmpty()) {
-            weatherTemp.setText((cityName != null ? cityName : "天门") + " " + temperature);
+            weatherTemp.setText((cityName != null ? cityName : "武汉") + " " + temperature);
             weatherTemp.setVisibility(View.VISIBLE);
         }
     }

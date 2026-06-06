@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean weatherFetchInProgress = false;
     private GestureDetector gestureDetector;
     private TextView cityNameText;
-    private String currentCityUrl = "湖北/天门";
-    private String currentCityDisplay = "天门";
+    private String currentCityUrl = "湖北/武汉";
+    private String currentCityDisplay = "武汉";
     
     private static final String PREFS_NAME = "CalendarNotes";
     private static final String PREF_CITY_URL = "weather_city_url";
@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
         // 加载缓存的天气数据
         loadWeatherCache();
         // 加载保存的城市
-        currentCityUrl = sharedPreferences.getString(PREF_CITY_URL, "湖北/天门");
-        currentCityDisplay = sharedPreferences.getString(PREF_CITY_NAME, "天门");
+        currentCityUrl = sharedPreferences.getString(PREF_CITY_URL, "湖北/武汉");
+        currentCityDisplay = sharedPreferences.getString(PREF_CITY_NAME, "武汉");
     }
     
     private void setupEventListeners() {
