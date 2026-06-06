@@ -676,8 +676,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        // 设置触摸监听器（绑定到日历网格，包含水平和垂直滑动）
-        calendarGrid.setOnTouchListener(new View.OnTouchListener() {
+        // 设置触摸监听器（绑定到内容根视图，覆盖整个界面）
+        View rootView = findViewById(android.R.id.content);
+        rootView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
