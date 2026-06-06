@@ -12,24 +12,28 @@
         android:layout_height="wrap_content"
         android:background="@drawable/header_gradient"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <TextView
             android:id="@+id/currentDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFeatureSettings="tnum"
             android:text="19"
             android:textColor="@color/white"
             android:textSize="48sp"
-            android:textStyle="normal" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="4dp">
 
             <TextView
                 android:id="@+id/currentDate"
@@ -37,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="2025年11月 星期二"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/cityName"
@@ -55,132 +59,142 @@
 
     </LinearLayout>
 
-    <!-- 日历主体 -->
+    <!-- 日历主体（卡片包裹） -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/card_bg">
 
-        <!-- 星期标题 -->
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="7"
-            android:rowCount="1">
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp">
 
-            <TextView
-                android:layout_width="0dp"
+            <!-- 星期标题 -->
+            <GridLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="日"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:columnCount="7"
+                android:rowCount="1"
+                android:paddingVertical="8dp"
+                android:background="@drawable/border_bottom">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="一"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="日"
+                    android:textColor="#e74c3c"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="二"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="一"
+                    android:textColor="@color/gray"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="三"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="二"
+                    android:textColor="@color/gray"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="四"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="三"
+                    android:textColor="@color/gray"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="五"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="四"
+                    android:textColor="@color/gray"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="六"
-                android:textColor="@color/gray"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="五"
+                    android:textColor="@color/gray"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-        </GridLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="六"
+                    android:textColor="#4facfe"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-        <!-- 日期网格 -->
-        <GridLayout
-            android:id="@+id/calendarGrid"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp"
-            android:columnCount="7"
-            android:rowCount="6" />
+            </GridLayout>
+
+            <!-- 日期网格 -->
+            <GridLayout
+                android:id="@+id/calendarGrid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                android:columnCount="7"
+                android:rowCount="6" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <!-- 日历控制 -->
+    <!-- 底部导航栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/light_gray"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical">
 
         <Button
             android:id="@+id/prevMonthBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/nav_button"
-            android:text="@string/prev_month"
-            android:textColor="@color/colorPrimary" />
+            android:text="‹ 上月"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:gravity="center" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -193,27 +207,34 @@
                 android:text="2025年11月"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/todayBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="28dp"
                 android:layout_marginStart="10dp"
                 android:background="@drawable/today_button"
-                android:text="@string/today"
-                android:textColor="@color/white" />
+                android:text="今"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="0dp" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/nextMonthBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
+            android:layout_marginStart="8dp"
             android:background="@drawable/nav_button"
-            android:text="@string/next_month"
-            android:textColor="@color/colorPrimary" />
+            android:text="下月 ›"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:gravity="center" />
 
     </LinearLayout>
 
