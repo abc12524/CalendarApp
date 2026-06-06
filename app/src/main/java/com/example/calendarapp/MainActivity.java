@@ -1,6 +1,7 @@
 package com.example.calendarapp;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -142,6 +145,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 goToToday();
+            }
+        });
+        
+        cityNameText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCityPickerDialog();
             }
         });
     }
@@ -367,6 +377,53 @@ public class MainActivity extends AppCompatActivity {
         renderCalendar();
     }
     
+    // ========== 城市切换 ==========
+    
+    private void showCityPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("切换城市");
+        
+        final EditText input = new EditText(this);
+        input.setHint("输入城市名，如: 北京、上海、武汉");
+        input.setText(currentCityDisplay);
+        input.setSelectAllOnFocus(true);
+        input.setPadding(40, 20, 40, 20);
+        builder.setView(input);
+        
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newCity = input.getText().toString().trim();
+                if (!newCity.isEmpty()) {
+                    changeCity(newCity);
+                }
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+    
+    private void changeCity(String newCityName) {
+        currentCityDisplay = newCityName;
+        currentCityUrl = newCityName;
+        
+        // 保存城市到 SharedPreferences
+        sharedPreferences.edit()
+            .putString(PREF_CITY_URL, currentCityUrl)
+            .putString(PREF_CITY_NAME, currentCityDisplay)
+            .apply();
+        
+        // 清除今天的天气缓存，下次自动重新获取
+        String todayKey = DATE_KEY_FORMAT.format(Calendar.getInstance().getTime());
+        String cacheKey = "weather_" + todayKey;
+        sharedPreferences.edit().remove(cacheKey).apply();
+        weatherCache.remove(todayKey);
+        
+        // 重新获取天气
+        weatherFetchInProgress = false;
+        renderCalendar();
+    }
+    
     // ========== 天气相关方法 ==========
     
     /**
@@ -422,7 +479,8 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             dateKey = params[0];
             try {
-                URL url = new URL("https://wttr.in/Hubei/Tianmen?format=%25c|%25t");
+                String encodedCity = URLEncoder.encode(currentCityUrl, "UTF-8").replace("%2F", "/");
+                URL url = new URL("https://wttr.in/" + encodedCity + "?format=%25c|%25t");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
