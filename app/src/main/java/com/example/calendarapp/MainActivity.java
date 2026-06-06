@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_CITY_NAME = "weather_city_name";
     private static final SimpleDateFormat DATE_KEY_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private static final SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日 EEEE", Locale.getDefault());
-    private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("yyyy年MM月", Locale.getDefault());
+    private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MM月", Locale.getDefault());
     
     // 农历计算相关
     private static final int[] lunarInfo = {
