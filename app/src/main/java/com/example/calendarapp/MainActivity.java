@@ -618,8 +618,8 @@ public class MainActivity extends AppCompatActivity {
     
     private void setupGestureDetector() {
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            private static final int SWIPE_THRESHOLD = 100;
-            private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+            private static final int SWIPE_THRESHOLD = 50;
+            private static final int SWIPE_VELOCITY_THRESHOLD = 60;
             
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -658,9 +658,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        // 设置触摸监听器
-        View rootView = findViewById(android.R.id.content);
-        rootView.setOnTouchListener(new View.OnTouchListener() {
+        // 设置触摸监听器（绑定到日历网格，包含水平和垂直滑动）
+        calendarGrid.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
